@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title></title>
+</head>
+<body>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			height: 100vh;
+			display: grid;
+			place-items: center;
+		}
+		canvas {
+			border: 1px solid black;
+		}
+	</style>
+	
+	<canvas tabindex=-1 id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+
+	<script>
+		let canvas = document.getElementById('canvas')
+		canvas.addEventListener('mouseenter', canvas.focus)
+		canvas.addEventListener('mouseleave', canvas.blur)
+	</script>
+	
+	<script type='text/javascript'>
+		var Module = { canvas: canvas }
+	</script>
+	
+	<script src="index.js"></script>
+</body>
+</html>
