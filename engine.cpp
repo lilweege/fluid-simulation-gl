@@ -261,12 +261,10 @@ void engine::update()
 	if (do_rot_y)
 	{
 		y_rot += time_ellapsed * (l_pressed ? -rotSpeed : rotSpeed);
-		modelMat = glm::rotate(glm::mat4(1.0f), y_rot, glm::vec3(0, 1.0, 0));
 	}
 	if (do_rot_z)
 	{
 		z_rot += time_ellapsed * (d_pressed ? -rotSpeed : rotSpeed);
-		modelMat = glm::rotate(glm::mat4(1.0f), z_rot, glm::vec3(0, 0, 1.0));
 	}
 	
 	if (do_rot_y || do_rot_z) {
