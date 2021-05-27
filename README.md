@@ -9,6 +9,7 @@ put screenshots here :)
 
 ## how do 🤷‍♂️
 - download and install emscripten from http://emscripten.org/
+- (optional) download external libraries (such as glm), add to build path
 - write a program with some function to loop, call `emscripten_set_main_loop` with the function pointer
   - I use a std::function and capture list to avoid static declarations and associated pains
 - compile with something similar to `em++ main.cpp -o index.html`
