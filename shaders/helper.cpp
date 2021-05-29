@@ -17,7 +17,7 @@ const char* fromFile(const char* filename)
 
 	char* source = new char[size]; // this is not deleted
 	fread(source, sizeof(char), size, file);
-	printf("%s\n", source);
+	// printf("%s\n", source);
 	fclose(file);
 	return source;
 }

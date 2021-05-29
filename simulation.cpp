@@ -1,8 +1,6 @@
 #include "simulation.h"
 
-// #include <iostream>
-void simulation::tick(float ms)
+void simulation::tick(float step)
 {
-	// std::cout << ++x << " " << ms << "\n";
-	// do sim stuff here
+	
 }

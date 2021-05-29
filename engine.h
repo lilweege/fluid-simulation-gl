@@ -12,32 +12,35 @@
 class engine {
 private:
 	// engine
-	float last_time = 0, curr_time;
-	float time_ellapsed = 0;
+	float last_time = 0, curr_time, delta_time = 0;
 	int screenW, screenH;
 
-	// render
-	// https://www.opengl-tutorial.org/beginners-tutorials/
-	GLfloat g_vertex_buffer_data[(36 + 64)*3];
-	GLfloat g_color_buffer_data[(36 + 64)*4];
-	GLuint vertexbuffer;
-	GLint posAttrib;
-	GLuint colorbuffer;
-	GLint colAttrib;
-	GLuint MatrixID;
-	glm::mat4 projMat;
-	glm::mat4 modelMat;
-	glm::mat4 viewMat;
-	glm::mat4 mvpMat;
-
 	// logic
+	static const int N = 40;
 	float y_rot = 0, z_rot = 0;
 	float rotSpeed = 0.001;
-	simulation sim;
+	// TODO: pick correct values
+	simulation sim{N, 1, 1};
+
+	// render
+	GLfloat
+		colorBuffer[N * N * N * 4], // r, g, b, a
+		vertexBuffer[N * N * N * 3]; // x, y, z
+	GLuint
+		vertexBufferId,
+		colorBufferId,
+		matrixId;
+	GLint
+		posAttrib,
+		colAttrib;
+	glm::mat4
+		projMat,
+		modelMat,
+		viewMat,
+		mvpMat;
 
 private:
-	// void process_input();
-	// void process_event(SDL_Event* event);
+
 	void init();
 	void update();
 	void redraw();
@@ -59,9 +62,8 @@ public:
 	void loop()
 	{
 		curr_time = SDL_GetTicks();
-		time_ellapsed = curr_time - last_time;
+		delta_time = curr_time - last_time;
 
-		// process_input();
 		update();
 		redraw();
 
