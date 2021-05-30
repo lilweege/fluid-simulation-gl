@@ -2,42 +2,50 @@
 #define SIMULATION
 
 #include <vector>
+using std::vector;
 
-// https://mikeash.com/pyblog/fluid-simulation-for-dummies.html
+typedef vector<vector<vector<float>>> vec3D_f;
+enum direction { X, Y, Z, W };
+
 
 class simulation {
 private:
-
-	int size;
+public:
+	int N;
 	float diff;
 	float visc;
-
-	// TODO: maybe make this a raw array
-	std::vector<std::vector<std::vector<float>>> density;
-	// TODO: rest of variables and functions
+	int iters;
+private:
+	vec3D_f temp_density;
+	vec3D_f density;
+	vector<vec3D_f> temp_velocities;
+	vector<vec3D_f> velocities;
 
 private:
 
-	void addDensity(int x, int y, int z, float amount);
-	void addVelocity(int x, int y, int z, float amountX, float amountY, float amountZ);
-
-	void diffuse(float step);
-	void project(float step);
-	void advect(float step);
-
+	void addSource(vec3D_f& vec, vec3D_f& temp_vec, float step);
+	void correctBounds(direction dir, vec3D_f& vec);
+	void diffuse(direction dir, float diff, float step);
+	void advect(direction dir, float step);
+	void project(vec3D_f& p, vec3D_f& div, float step);
 
 public:
-	simulation(int n, int diffusion, int viscosity)
-		: size(n), diff(diffusion), visc(viscosity)
-	{
-		density.resize(n, std::vector<std::vector<float>>(n, std::vector<float>(n)));
-		for (int i = 0; i < n; ++i)
-			for (int j = 0; j < n; ++j)
-				for (int k = 0; k < n; ++k)
-					density[i][j][k] = 0.1;
 
+	simulation(int n, float diffusion, float viscosity/*, int iterations*/)
+		: N(n), diff(diffusion), visc(viscosity), iters(4)
+	{
+		density.resize(n, vector<vector<float>>(n, vector<float>(n)));
+		temp_density.resize(n, vector<vector<float>>(n, vector<float>(n)));
+
+		velocities.resize(3, vector<vector<vector<float>>>(n, vector<vector<float>>(n, vector<float>(n))));
+		temp_velocities.resize(3, vector<vector<vector<float>>>(n, vector<vector<float>>(n, vector<float>(n))));
+
+
+		// addDensity(N/2, N/2, N/2, 0.5f*N*N*N);
 	}
 
+	void addDensity(int i, int j, int k, float amount) { density[i][j][k] += amount; }
+	void addVelocity(direction dir, int i, int j, int k, float amount) { velocities[dir][i][j][k] += amount; }
 	float getDensity(int i, int j, int k) { return density[i][j][k]; }
 
 	void tick(float step);

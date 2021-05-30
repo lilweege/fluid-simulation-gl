@@ -30,9 +30,9 @@ void engine::init()
 	// buffers
 	for (int i = 0; i < N * N * N * 4; i += 4)
 	{
-		colorBuffer[i    ] = 0;
-		colorBuffer[i + 1] = 0;
-		colorBuffer[i + 2] = 0;
+		colorBuffer[i    ] = 0.5;
+		colorBuffer[i + 1] = 0.5;
+		colorBuffer[i + 2] = 0.5;
 		colorBuffer[i + 3] = 1;
 	}
 
@@ -114,14 +114,14 @@ void engine::update()
 				int idx = N * N * i + N * j + k;
 				// colorBuffer[idx * 4 + 3] = sim.density[idx];
 				colorBuffer[idx * 4 + 3] = sim.getDensity(i, j, k);
-				// let the transparency of each 'black pixel' be the sampled particle density
+				// let the transparency of each 'gray pixel' be the sampled particle density
 			}
 }
 
 void engine::redraw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(1.0, 1.0, 1.0, 1.0f);
+	glClearColor(0.0, 0.7, 1.0, 1.0f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, colorBufferId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(colorBuffer), colorBuffer, GL_STATIC_DRAW);

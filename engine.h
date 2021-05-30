@@ -20,7 +20,7 @@ private:
 	float y_rot = 0, z_rot = 0;
 	float rotSpeed = 0.001;
 	// TODO: pick correct values
-	simulation sim{N, 1, 1};
+	simulation sim{N, 1, 0.1};
 
 	// render
 	GLfloat
