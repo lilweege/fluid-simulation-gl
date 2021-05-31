@@ -1,10 +1,11 @@
 # fluid-simulation-gl
 a 3d realtime fluid dynamics simulation using opengl, compiled to javascript for the web browser using emscripten  
+inspired by and based upon [Jos Stam's Real-Time Fluid Dynamics for Games](http://graphics.cs.cmu.edu/nsp/course/15-464/Fall09/papers/StamFluidforGames.pdf) and [Mike Ash's Fluid Simulation for Dummies](https://mikeash.com/pyblog/fluid-simulation-for-dummies.html)  
 
-## demo
-see the live demo at https://luigi.codes/archive/fluid-simulation-gl/  
-
-put screenshots here :)
+## try it out
+live demo at https://luigi.codes/projects/fluid-simulation-gl/  
+![screenshot 1](https://raw.githubusercontent.com/lilweege/fluid-simulation-gl/master/screenshots/ss1.png)  
+![screenshot 2](https://raw.githubusercontent.com/lilweege/fluid-simulation-gl/master/screenshots/ss2.png)  
 
 
 ## how do 🤷‍♂️
@@ -20,4 +21,4 @@ put screenshots here :)
 #### notes
 - you don't need to use opengl if all you're after is 2d rendering; it's easiest to simply use SDL or nothing at all  
 - I ran into problems with the canvas created by SDL stealing keyboard input, which I partially avoid with focus/blur on mouseover in conjunction with setting the `SDL_HINT_EMSCRIPTEN_KEYBOARD_ELEMENT` hint to id `"#canvas"`, I would be deligted to find a more elegant method  
-
+- I don't claim to fully understand all that goes into the magical methods and linear solvers within the simulation (and I became espescially annoyed with the porting from 2D to 3D at times), but it's fun if anything to play with despite it not even being correct in places
