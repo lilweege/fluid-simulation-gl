@@ -28,13 +28,20 @@ void engine::init()
 
 
 	// buffers
+	// color buffers
 	for (int i = 0; i < N * N * N * 4; i += 4)
 	{
-		colorBuffer[i    ] = 0.5;
-		colorBuffer[i + 1] = 0.5;
-		colorBuffer[i + 2] = 0.5;
+		// arbitrary colored smoke
+		colorBuffer[i    ] = 0.52;
+		colorBuffer[i + 1] = 0.45;
+		colorBuffer[i + 2] = 0.66;
 		colorBuffer[i + 3] = 1;
 	}
+	// cube (lines) black full alpha
+	GLfloat cubeColorBuffer[16 * 4] = { 0 };
+	for (int i = 0; i < 16 * 4; i += 4)
+		cubeColorBuffer[i + 3] = 1;
+	memcpy(colorBuffer + N * N * N * 4, cubeColorBuffer, sizeof(cubeColorBuffer));
 
 	glGenBuffers(1, &colorBufferId);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBufferId);
@@ -43,6 +50,7 @@ void engine::init()
 	glEnableVertexAttribArray(colAttrib);
 	glVertexAttribPointer(colAttrib, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
+	// vertex buffers
 	for (int i = 0; i < N; ++i)
 		for (int j = 0; j < N; ++j)
 			for (int k = 0; k < N; ++k)
@@ -53,6 +61,28 @@ void engine::init()
 				vertexBuffer[idx + 1] = j / float(N) * 2 - 1 + (1 / float(N));
 				vertexBuffer[idx + 2] = k / float(N) * 2 - 1 + (1 / float(N));
 			}
+
+	// yeah repeating vertices is really bad
+	// TODO: use an index buffer for this
+	GLfloat cubeVertexBuffer[] = {
+		-1.0, -1.0, -1.0, // 0 -
+		-1.0, -1.0,  1.0, // 1
+		-1.0,  1.0,  1.0, // 2
+		-1.0,  1.0, -1.0, // 3
+		-1.0, -1.0, -1.0, // 0 -
+		 1.0, -1.0, -1.0, // 4 -
+		 1.0, -1.0,  1.0, // 5
+		 1.0,  1.0,  1.0, // 6
+		 1.0,  1.0, -1.0, // 7
+		 1.0, -1.0, -1.0, // 4 -
+		 1.0,  1.0, -1.0, // 7
+		-1.0,  1.0, -1.0, // 3
+		-1.0,  1.0,  1.0, // 2
+		 1.0,  1.0,  1.0, // 6
+		 1.0, -1.0,  1.0, // 5
+		-1.0, -1.0,  1.0, // 1
+	};
+	memcpy(vertexBuffer + N * N * N * 3, cubeVertexBuffer, sizeof(cubeVertexBuffer));
 
 	glGenBuffers(1, &vertexBufferId);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBufferId);
@@ -106,22 +136,36 @@ void engine::update()
 	}
 
 
-	sim.tick(delta_time);
+	// arbitrary setup that I found is at least somewhat interesting,
+	// given the broken state of the simulation class
+	if (state[SDL_SCANCODE_SPACE])
+	{
+		// emit fluid
+		sim.addVelocity(Y, N/2, N/5, N/2, 100000 * delta_time);
+		sim.addDensity(N/2, N/5, N/2, 0.00001f * N * N * N * delta_time);
+	}
+	// fade fluid
+	for (int i = 1; i < N - 1; ++i)
+		for (int j = 1; j < N - 1; ++j)
+			for (int k = 1; k < N - 1; ++k)
+				sim.addDensity(i, j, k, -0.000001f * delta_time);
+
+	// do simulation stuff
+	float step = delta_time / 10000000.0f;
+	sim.tick(step);
+	// new density values -> color buffer (transparency)
 	for (int i = 0; i < N; ++i)
 		for (int j = 0; j < N; ++j)
 			for (int k = 0; k < N; ++k)
-			{
-				int idx = N * N * i + N * j + k;
-				// colorBuffer[idx * 4 + 3] = sim.density[idx];
-				colorBuffer[idx * 4 + 3] = sim.getDensity(i, j, k);
+				colorBuffer[(N * N * i + N * j + k) * 4 + 3] = sim.getDensity(i, j, k);
 				// let the transparency of each 'gray pixel' be the sampled particle density
-			}
 }
 
 void engine::redraw()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0, 0.7, 1.0, 1.0f);
+	// glClearColor(0.0, 0.7, 1.0, 1.0f);
+	glClearColor(1.0, 1.0, 1.0, 1.0f);
 
 	glBindBuffer(GL_ARRAY_BUFFER, colorBufferId);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(colorBuffer), colorBuffer, GL_STATIC_DRAW);
@@ -131,5 +175,6 @@ void engine::redraw()
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBuffer), vertexBuffer, GL_STATIC_DRAW);
 	glVertexAttribPointer(posAttrib, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_POINTS, 0,  N * N * N);
+	glDrawArrays(GL_POINTS, 0,  N * N * N); // points
+	glDrawArrays(GL_LINE_STRIP, N * N * N, 16); // cube
 }

@@ -13,3 +13,9 @@ RUN = emrun index.html --browser=$(RUN_BROWSER_PATH) 2> /dev/null
 all: main.cpp engine.cpp engine.h simulation.cpp simulation.h
 	em++ -std=c++17 -s USE_SDL=2 $(GL_FLAGS) $(EM_FLAGS) -O3 *.cpp -o index.js
 	$(RUN)
+
+build:
+	em++ -std=c++17 -s USE_SDL=2 $(GL_FLAGS) $(EM_FLAGS) -O3 *.cpp -o index.js
+
+run:
+	$(RUN)

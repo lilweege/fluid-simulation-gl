@@ -36,12 +36,8 @@ public:
 	{
 		density.resize(n, vector<vector<float>>(n, vector<float>(n)));
 		temp_density.resize(n, vector<vector<float>>(n, vector<float>(n)));
-
 		velocities.resize(3, vector<vector<vector<float>>>(n, vector<vector<float>>(n, vector<float>(n))));
 		temp_velocities.resize(3, vector<vector<vector<float>>>(n, vector<vector<float>>(n, vector<float>(n))));
-
-
-		// addDensity(N/2, N/2, N/2, 0.5f*N*N*N);
 	}
 
 	void addDensity(int i, int j, int k, float amount) { density[i][j][k] += amount; }

@@ -23,9 +23,10 @@ private:
 	simulation sim{N, 1, 0.1};
 
 	// render
-	GLfloat
-		colorBuffer[N * N * N * 4], // r, g, b, a
-		vertexBuffer[N * N * N * 3]; // x, y, z
+	// points
+	GLfloat // N^3 points + a few extra verts to draw cube
+		colorBuffer[(N * N * N + 16) * 4], // r, g, b, a
+		vertexBuffer[(N * N * N + 16) * 3]; // x, y, z
 	GLuint
 		vertexBufferId,
 		colorBufferId,

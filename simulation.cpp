@@ -1,5 +1,4 @@
 #include "simulation.h"
-#include <stdio.h>
 
 void linSolve(vec3D_f& vec, vec3D_f& temp_vec, float a, float div)
 {
@@ -20,21 +19,16 @@ void linSolve(vec3D_f& vec, vec3D_f& temp_vec, float a, float div)
 
 // http://graphics.cs.cmu.edu/nsp/course/15-464/Fall09/papers/StamFluidforGames.pdf
 // https://mikeash.com/pyblog/fluid-simulation-for-dummies.html
+// The methods below are definetly filled with mistakes, specifically `project`.
+// For now all I've done is poorly port the code from Stam's paper, maybe
+// once I've read up about this stuff more in depth then I'll be able to
+// fix the mistakes (even Mike Ash got it wrong in his, some bugs were pointed
+// out in his comment section). I remain suspicious of the many magic numbers.
+// For now, though, it functions well enough that I won't worry about it...
+
 
 void simulation::tick(float step)
 {
-	addVelocity(Y, N/2, N/2, N/2, 100000*step);
-	step /= 10000000.0f;
-
-	for (int i = 1; i < N - 1; ++i)
-		for (int j = 1; j < N - 1; ++j)
-			for (int k = 1; k < N - 1; ++k)
-			{
-				density[i][j][k] -= 50 * step;
-			}
-	addDensity(N/2, N/2, N/2, N*N*N*step*100);
-
-
 	// vel_step
 	addSource(velocities[X], temp_velocities[X], step);
 	addSource(velocities[Y], temp_velocities[Y], step);
@@ -43,12 +37,12 @@ void simulation::tick(float step)
 	diffuse(X, visc, step);
 	diffuse(Y, visc, step);
 	diffuse(Z, visc, step);
-	project(temp_velocities[X], temp_velocities[Y], step);
+	project(temp_velocities[X], temp_velocities[Y], step); // This doesn't make sense in 3D
 	velocities.swap(temp_velocities);
 	advect(X, step);
 	advect(Y, step);
 	advect(Z, step);
-	project(temp_velocities[X], temp_velocities[Y], step);
+	project(temp_velocities[X], temp_velocities[Y], step); // here aswell
 
 	// dens_step
 	addSource(density, temp_density, step);
@@ -109,8 +103,9 @@ void simulation::advect(direction dir, float step)
 
 void simulation::project(vec3D_f& p, vec3D_f& div, float step)
 {
-	// yeah I don't fully understand how this method is meant to scale
+	// Yeah I don't fully understand how this method is meant to scale
 	// from 2D to 3D, Stam's paper doesn't fully explain it
+	// What is p? What is div? Who knows (definetly not me)...
 	for (int i = 1; i < N - 1; ++i)
 		for (int j = 1; j < N - 1; ++j)
 			for (int k = 1; k < N - 1; ++k)

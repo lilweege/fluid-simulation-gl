@@ -8,18 +8,31 @@
 <body>
 	<style>
 		body {
+			background: #131516;
+			color: white;
 			margin: 0;
 			padding: 0;
 			height: 100vh;
-			display: grid;
-			place-items: center;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			text-align: center;
 		}
 		canvas {
 			border: 1px solid black;
 		}
+		a {
+			color: #6dbbfc;
+		}
 	</style>
 	
 	<canvas tabindex=-1 id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+	<p>
+		Press &#60spacebar&#62 to release fluid. Use arrow keys to rotate.<br>
+		<small>(hover on canvas with mouse to interact)</small><br>
+	</p>
+	<a href="https://github.com/lilweege/fluid-simulation-gl">GitHub repository</a><br>
 
 	<script>
 		let canvas = document.getElementById('canvas')
